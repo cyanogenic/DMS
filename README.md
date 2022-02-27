@@ -16,6 +16,7 @@ DMS是基于[Laravel](https://laravel.com)和[Dcat Admin](http://www.dcatadmin.c
 - 创建Event选择Member的全选是当前页全选
 - 详情、新增/修改页面的字段布局
 - 字段翻译
+- 部署时自动添加菜单项
 
 
 ## 待开发的功能
