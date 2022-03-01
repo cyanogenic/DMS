@@ -23,3 +23,5 @@ DMS是基于[Laravel](https://laravel.com)和[Dcat Admin](http://www.dcatadmin.c
 - 权限控制
 - 系统主页
 - 上传游戏截图自动识别团内玩家ID
+- 手动修改DKP
+- DKP拍卖系统

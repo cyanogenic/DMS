@@ -23,18 +23,6 @@ class CreateScoringsTable extends Migration
             
             $table->timestamps();
         });
-
-        $timestamp = date("Y-m-d H:i:s");
-        DB::table('scorings')->insert([
-            ['name' => '转点香主', 'point' => 3, 'created_at' => $timestamp, 'updated_at' => $timestamp],
-            ['name' => '四海BOSS', 'point' => 10, 'created_at' => $timestamp, 'updated_at' => $timestamp],
-            ['name' => '枭野决战', 'point' => 10, 'created_at' => $timestamp, 'updated_at' => $timestamp],
-            ['name' => '修罗城', 'point' => 10, 'created_at' => $timestamp, 'updated_at' => $timestamp],
-            ['name' => '世界BOSS', 'point' => 10, 'created_at' => $timestamp, 'updated_at' => $timestamp],
-            ['name' => '帮派联赛', 'point' => 20, 'created_at' => $timestamp, 'updated_at' => $timestamp],
-            ['name' => '天龙号', 'point' => 5, 'created_at' => $timestamp, 'updated_at' => $timestamp],
-            ['name' => '打架', 'point' => 10, 'created_at' => $timestamp, 'updated_at' => $timestamp],
-        ]);
     }
 
     /**
