@@ -1,13 +1,14 @@
 <?php 
 return [
     'labels' => [
-        'Member' => '成员',
-        'member' => '成员',
+        'Member' => '玩家列表',
+        'member' => '玩家列表',
     ],
     'fields' => [
         'nickname' => '昵称',
         'name' => '游戏ID',
         'dkp' => 'DKP',
+        'alias' => '曾用名',
     ],
     'options' => [
     ],
