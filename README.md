@@ -20,6 +20,9 @@ DMS是基于[Laravel](https://laravel.com)和[Dcat Admin](http://www.dcatadmin.c
 - 字段翻译
 - ~~部署时自动添加菜单项~~
 - 添加活动时参与玩家选择无法搜索曾用名
+- 玩家列表默认按DKP排序
+- 玩家列表添加搜索栏
+- 活动列表默认按活动时间排序
 
 ## 待开发的功能
 - 权限控制
