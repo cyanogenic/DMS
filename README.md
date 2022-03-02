@@ -27,3 +27,4 @@ DMS是基于[Laravel](https://laravel.com)和[Dcat Admin](http://www.dcatadmin.c
 - 手动设定计分项的DKP值
 - DKP拍卖系统
 - DKP导出
+- 审计日志回滚

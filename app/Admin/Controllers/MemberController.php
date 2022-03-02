@@ -70,7 +70,7 @@ class MemberController extends AdminController
             // $form->display('id');
             $form->text('nickname')->required();
             $form->text('name')->required();
-            // $form->number('dkp');
+            $form->number('dkp');
         
             // $form->display('created_at');
             // $form->display('updated_at');

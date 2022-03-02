@@ -9,6 +9,7 @@ return [
         'point' => '分值',
         'comment' => '说明',
         'member' => '参与玩家',
+        'nickname' => '昵称',
     ],
     'options' => [
     ],
