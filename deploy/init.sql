@@ -24,3 +24,4 @@ INSERT INTO `admin_menu` VALUES (7, 2, 10, 'Extensions', '', 'auth/extensions', 
 INSERT INTO `admin_menu` VALUES (8, 0, 2, 'Members', 'fa-address-card-o', 'members', '', 1, '2022-03-01 10:40:17', '2022-03-01 10:41:17');
 INSERT INTO `admin_menu` VALUES (9, 0, 3, 'Events', 'fa-gamepad', 'events', '', 1, '2022-03-01 10:40:50', '2022-03-01 10:41:17');
 INSERT INTO `admin_menu` VALUES (10, 0, 4, 'Scorings', 'fa-list-ul', 'scorings', '', 1, '2022-03-01 10:41:09', '2022-03-01 10:41:17');
+INSERT INTO `admin_menu` VALUES (11, 2, 11, 'Operation Log', '', 'auth/operation-logs', 'dcat-admin.operation-log', 1, '2022-03-02 09:04:03', '2022-03-02 09:53:57');

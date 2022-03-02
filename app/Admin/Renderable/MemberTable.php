@@ -20,6 +20,7 @@ class MemberTable extends LazyRenderable
             $grid->quickSearch(['name', 'nickname']);
 
             $grid->paginate(10);
+            $grid->perPages([10, 20, 50, 100, 200]);
             $grid->disableActions();
 
             // $grid->filter(function (Grid\Filter $filter) {
