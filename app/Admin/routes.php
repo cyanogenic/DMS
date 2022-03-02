@@ -15,7 +15,6 @@ Route::group([
     $router->get('/', 'HomeController@index');
     
     $router->resource('members', 'MemberController');
-    // $router->resource('alias', 'AliasController');
     $router->resource('scorings', 'ScoringController');
     $router->resource('events', 'EventController');
 });

@@ -7,7 +7,7 @@ DMS是基于[Laravel](https://laravel.com)和[Dcat Admin](http://www.dcatadmin.c
 - ~~表单必填项未填的错误提示~~
 - 表单唯一值重复的错误提示
 - 首页活跃玩家卡片曲线图Series Name
-- 修改昵称后自动添加曾用名
+- ~~修改昵称后自动添加曾用名~~
 
 ## 待优化的问题
 - ~~event_member表设置外键、ondelete方法~~
@@ -25,8 +25,7 @@ DMS是基于[Laravel](https://laravel.com)和[Dcat Admin](http://www.dcatadmin.c
 - 权限控制
 - 系统主页
 - 上传游戏截图自动识别团内玩家ID
-- 手动修改DKP
-- 手动设定计分项的DKP值
+- ~~手动修改DKP~~
 - DKP拍卖系统
 - DKP导出
 - 审计日志回滚
