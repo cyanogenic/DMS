@@ -20,7 +20,8 @@ class MemberController extends AdminController
     protected function grid()
     {
         return Grid::make(Member::with(['alias']), function (Grid $grid) {
-            // $grid->column('id')->sortable();
+            $grid->quickSearch('name', 'nickname', 'alias.name');
+
             $grid->nickname();
             $grid->name();
             $grid->alias()
@@ -29,14 +30,9 @@ class MemberController extends AdminController
                     $modal->title($this->name . '的曾用名');
                     return AliasTable::make();
             });
-            $grid->dkp();
-            $grid->created_at();
+            $grid->dkp()->sortable();
+            $grid->created_at()->sortable();
             $grid->updated_at()->sortable();
-        
-            $grid->filter(function (Grid\Filter $filter) {
-                $filter->equal('id');
-        
-            });
         });
     }
 
@@ -50,7 +46,6 @@ class MemberController extends AdminController
     protected function detail($id)
     {
         return Show::make($id, new Member(), function (Show $show) {
-            // $show->field('id');
             $show->field('nickname');
             $show->field('name');
             $show->field('dkp');
@@ -67,13 +62,9 @@ class MemberController extends AdminController
     protected function form()
     {
         return Form::make(new Member(), function (Form $form) {
-            // $form->display('id');
             $form->text('nickname')->required();
             $form->text('name')->required();
             $form->number('dkp');
-        
-            // $form->display('created_at');
-            // $form->display('updated_at');
             
             $form->saving(function (Form $form) {
                 // 判断是否是修改操作

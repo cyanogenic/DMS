@@ -22,22 +22,17 @@ class EventController extends AdminController
     protected function grid()
     {
         return Grid::make(Event::with(['scoring', 'member']), function (Grid $grid) {
-            // $grid->column('id')->sortable();
-            $grid->column('time');
+            $grid->model()->orderBy('time', 'desc');
+
+            $grid->column('time')->sortable()->display(function ($time) {
+                return date("Y-m-d H:i", strtotime($time));
+            });;
             $grid->column('scoring.name', __('计分项'));
+            $grid->column('point');
             $grid->column('member')->pluck('name')->badge();
             $grid->column('comment');
-            // $grid->column('created_at');
-            $grid->column('updated_at')->sortable();
-        
-            $grid->filter(function (Grid\Filter $filter) {
-                $filter->equal('id');
-        
-            });
-
-            //TODO 想不到查看/编辑的方案，先屏蔽按钮
-            $grid->disableViewButton();
-            $grid->disableEditButton();
+            
+            $grid->column('updated_at');
         });
     }
 
@@ -50,12 +45,34 @@ class EventController extends AdminController
      */
     protected function detail($id)
     {
-        return Show::make($id, new Event(), function (Show $show) {
-            // $show->field('id');
-            $show->field('time');
-            $show->field('member');
+        $model = Event::with('scoring');
+        return Show::make($id, $model, function (Show $show) {
+            $show->field('time')->as(function ($time) {
+                return date("Y-m-d H:i", strtotime($time));
+            });
+            $show->field('scoring.name', __('计分项'));
+            $show->field('point');
+            $show->relation('member', function ($model) {
+                $grid = new Grid(new Member);
+
+                $grid->model()->join('event_member', function ($join) use ($model) {
+                    $join->on('event_member.member_id', 'id')
+                        ->where('event_id', '=', $model->id);
+                });
+            
+                $grid->nickname;
+                $grid->name;
+                
+                $grid->disableActions();
+                $grid->disableRefreshButton();
+                $grid->disableCreateButton();
+                $grid->disableRowSelector();
+                
+                return $grid;
+            });
             $show->field('comment');
-            // $show->field('created_at');
+
+            $show->field('created_at');
             $show->field('updated_at');
         });
     }
@@ -68,43 +85,64 @@ class EventController extends AdminController
     protected function form()
     {
         return Form::make(Event::with(['scoring', 'member']), function (Form $form) {
-            // $form->display('id');
-            $form->datetime('time')->default(date("Y-m-d H:i:s"))->required();
+            $form->datetime('time')->format('YYYY-MM-DD HH:mm')
+                ->default(date("Y-m-d H:i:s"))->required();
+            // 同时取name和point
             $form->select('scoring_id', __('计分项'))->options(Scoring::all()->pluck('name', 'id'))->required();
+            $form->radio('custom_point')
+                ->when(1, function (Form $form) { $form->number('point'); })
+                ->options([ 0 => '否', 1 => '是' ])
+                ->default(0);
+
             $form->multipleSelectTable('member', __('参与玩家'))
                 ->title('参与玩家')
-                // ->max(4)
                 ->from(MemberTable::make())
                 ->model(Member::class, 'id', 'name')
-                ->required();
+                ->required()
+                ->customFormat(function ($v) {
+                    if (!$v) return [];
+                    // 这一步非常重要，需要把数据库中查出来的二维数组转化成一维数组
+                    return array_column($v, 'id');
+                });
             $form->text('comment');
         
-            // $form->display('created_at');
-            // $form->display('updated_at');
+            // 提交时填充point字段
+            $form->saving(function (Form $form) {
+                if (!$form->custom_point) {
+                    $form->point = DB::table('scorings')->where('id', $form->scoring_id)->value('point');
+                }
+                // 不提交自定义分值的开关
+                $form->deleteInput('custom_point');
 
-            //修改本身还有BUG,先不考虑修改的情况
+                // TODO 快看,是脑瘫代码
+                // 修改操作前先减
+                $a = $form->getKey();
+                DB::update(
+                    'UPDATE members SET dkp = dkp - (SELECT point FROM `events` WHERE id = ?) WHERE id IN (SELECT member_id from event_member WHERE event_id = ?)',
+                    [$form->getKey(), $form->getKey()]
+                );
+            });
+
+            // result未使用
             $form->saved(function (Form $form, $result) {
                 $newId = $form->getKey();
-                $affected = DB::update(
-                    'UPDATE members SET dkp = dkp + (SELECT point FROM scorings WHERE id IN (SELECT scoring_id FROM `events` WHERE id = ?))  WHERE id IN (SELECT member_id from event_member WHERE event_id = ?)',
+                // 新增或修改后重新加DKP
+                DB::update(
+                    'UPDATE members SET dkp = dkp + (SELECT point FROM `events` WHERE id = ?) WHERE id IN (SELECT member_id from event_member WHERE event_id = ?)',
                     [$newId, $newId]
                 );
-                if (! $affected) {
-                    return $form->error('DKP计算失败');
-                }
             });
-            
+
+            // 删除后重新计算DKP
             $form->deleting(function (Form $form) {
                 // 获取待删除行数据，这里获取的是一个二维数组
                 $data = $form->model()->toArray();
+                //
                 foreach ($data as $key => $value) {
-                    $affected = DB::update(
-                        'UPDATE members SET dkp = dkp - (SELECT point FROM scorings WHERE id = ?)  WHERE id IN (SELECT member_id from event_member WHERE event_id = ?)',
-                        [$value["scoring_id"], $value["id"]]
+                    DB::update(
+                        'UPDATE members SET dkp = dkp - ? WHERE id IN (SELECT member_id from event_member WHERE event_id = ?)',
+                        [$value["point"], $value["id"]]
                     );
-                    if (! $affected) {
-                        return $form->error('DKP计算失败');
-                    }
                 }
             });
         });

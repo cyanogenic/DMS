@@ -18,17 +18,12 @@ class ScoringController extends AdminController
     protected function grid()
     {
         return Grid::make(new Scoring(), function (Grid $grid) {
-            // $grid->column('id')->sortable();
             $grid->column('name');
-            $grid->column('point');
+            $grid->column('point')->sortable();
             $grid->column('comment');
             $grid->column('created_at');
-            $grid->column('updated_at')->sortable();
+            $grid->column('updated_at');
         
-            $grid->filter(function (Grid\Filter $filter) {
-                $filter->equal('id');
-        
-            });
         });
     }
 
@@ -42,7 +37,6 @@ class ScoringController extends AdminController
     protected function detail($id)
     {
         return Show::make($id, new Scoring(), function (Show $show) {
-            // $show->field('id');
             $show->field('name');
             $show->field('point');
             $show->field('comment');
@@ -59,13 +53,9 @@ class ScoringController extends AdminController
     protected function form()
     {
         return Form::make(new Scoring(), function (Form $form) {
-            // $form->display('id');
             $form->text('name')->required();
             $form->number('point')->required();
             $form->text('comment');
-        
-            // $form->display('created_at');
-            // $form->display('updated_at');
         });
     }
 }

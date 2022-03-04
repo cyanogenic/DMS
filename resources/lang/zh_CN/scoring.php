@@ -6,7 +6,7 @@ return [
     ],
     'fields' => [
         'name' => '计分项',
-        'point' => '分值',
+        'point' => '默认分值',
         'comment' => '说明',
     ],
     'options' => [

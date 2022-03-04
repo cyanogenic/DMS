@@ -25,19 +25,3 @@ INSERT INTO `admin_menu` VALUES (8, 0, 2, 'Members', 'fa-address-card-o', 'membe
 INSERT INTO `admin_menu` VALUES (9, 0, 3, 'Events', 'fa-gamepad', 'events', '', 1, '2022-03-01 10:40:50', '2022-03-01 10:41:17');
 INSERT INTO `admin_menu` VALUES (10, 0, 4, 'Scorings', 'fa-list-ul', 'scorings', '', 1, '2022-03-01 10:41:09', '2022-03-01 10:41:17');
 INSERT INTO `admin_menu` VALUES (11, 2, 11, 'Operation Log', '', 'auth/operation-logs', 'dcat-admin.operation-log', 1, '2022-03-02 09:04:03', '2022-03-02 09:53:57');
-
--- ----------------------------
--- Table structure for admin_operation_log
--- ----------------------------
-CREATE TABLE `admin_operation_log`  (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) NOT NULL,
-  `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ip` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `input` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `admin_operation_log_user_id_index`(`user_id`)
-);
