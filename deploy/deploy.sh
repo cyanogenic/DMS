@@ -39,4 +39,7 @@ if [ -z "$APP_KEY" ]; then
     php artisan key:generate
 fi
 
+# 生成storage link
+php artisan storage:link
+
 echo "部署完成,默认用户名/密码: admin/admin"

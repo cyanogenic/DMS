@@ -8,8 +8,10 @@ use App\Models\Member;
 use App\Models\Scoring;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
+use Dcat\Admin\Grid\Displayers\Badge;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
+use Dcat\Admin\Widgets\Card;
 use Illuminate\Support\Facades\DB;
 
 class EventController extends AdminController
@@ -27,10 +29,10 @@ class EventController extends AdminController
             $grid->column('time')->sortable()->display(function ($time) {
                 return date("Y-m-d H:i", strtotime($time));
             });;
-            $grid->column('scoring.name', __('计分项'));
+            $grid->column('scoring.name', __('计分项'))->width('10%');
             $grid->column('point');
-            $grid->column('member')->pluck('name')->badge();
-            $grid->column('comment');
+            $grid->column('member')->width('40%')->pluck('name')->badge();
+            $grid->column('comment')->width('20%');
             
             $grid->column('updated_at');
         });
