@@ -21,6 +21,11 @@ class MemberController extends AdminController
     {
         return Grid::make(Member::with(['alias']), function (Grid $grid) {
             $grid->quickSearch('name', 'nickname', 'alias.name');
+            $grid->export()->titles([
+                'nickname' => '昵称',
+                'name' => '游戏ID',
+                'dkp' => 'dkp',
+            ]);
 
             $grid->nickname();
             $grid->name();
