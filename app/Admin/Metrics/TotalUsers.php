@@ -41,17 +41,26 @@ class TotalUsers extends Card
      */
     public function handle(Request $request)
     {
+        $days = $request->get('option') ?? 7;
+        $old = Carbon::today()->subDay($days - 1)->toDateTimeString();
+        
         $member_now = DB::table('members')
-            ->whereDate('created_at', '>=', Carbon::today()->subDay($request->get('option')))
+            ->where('deleted_at', NULL)
             ->count();
         $member_old = DB::table('members')
-            ->whereDate('created_at', '>=', Carbon::today()->subDay($request->get('option') * 2))
-            ->whereDate('created_at', '<=', Carbon::today()->subDay($request->get('option')))
+            ->whereDate('created_at', '<', $old)
+            ->whereDate('deleted_at', '>=', $old)
+            ->orWhere('deleted_at', NULL)
             ->count();
         
 
-        $this->content(1);
-        $this->up(1);
+        $this->content($member_now);
+        if ($member_old < $member_now) {
+            $this->up(round(($member_now - $member_old) / $member_old * 100, 2));
+        } elseif ($member_old > $member_now) {
+            $this->down(round(($member_old - $member_now) / $member_now * 100,2));
+        }
+        
     }
 
     /**

@@ -25,15 +25,13 @@ class ActiveMembers extends Line
         ]);
     }
 
-    public function activeMember($days, $rate)
+    public function activeMember($start, $end)
     {
-        $start = Carbon::today()->subDay($days * ($rate + 1))->toDateTimeString();
-        $end = Carbon::today()->subDay($days * $rate -1)->toDateTimeString();
-
-        return DB::table('event_member')
+        $active_member = DB::table('event_member')
             ->join('events', 'events.id', '=', 'event_member.event_id')
             ->whereBetween('events.time', [$start, $end])
             ->select('member_id')->distinct()->get()->count();
+        return $active_member;
     }
 
     /**
@@ -47,8 +45,13 @@ class ActiveMembers extends Line
     {
 
         $members = array();
-        for ($i=0; $i < 7; $i++) { 
-            $members[] = $this->activeMember($request->get('option') ?? 7, $i);
+        $days = $request->get('option') ?? 7;
+
+        for ($i=0; $i < 7; $i++) {
+            $start = Carbon::today()->subDay($days * ($i + 1) - 1)->toDateTimeString();
+            $end = Carbon::today()->subDay($days * $i - 1)->toDateTimeString();
+
+            $members[] = $this->activeMember($start, $end);
         }
 
         $this->withContent($members[0]);

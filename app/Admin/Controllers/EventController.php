@@ -8,10 +8,8 @@ use App\Models\Member;
 use App\Models\Scoring;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
-use Dcat\Admin\Grid\Displayers\Badge;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
-use Dcat\Admin\Widgets\Card;
 use Illuminate\Support\Facades\DB;
 
 class EventController extends AdminController

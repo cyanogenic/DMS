@@ -22,17 +22,17 @@ class HomeController extends Controller
                 $row->column(6, function (Column $column) {
                     // $column->row(Dashboard::title());
                     $column->row(new ActiveMembers());
-                    $column->row(new Examples\ProductOrders());
+                    // $column->row(new Examples\ProductOrders());
                 });
 
                 $row->column(6, function (Column $column) {
                     $column->row(function (Row $row) {
                         $row->column(6, new TotalUsers());
                         // $row->column(6, new Examples\NewUsers());
-                        $row->column(6, new Examples\NewDevices());
+                        // $row->column(6, new Examples\NewDevices());
                     });
 
-                    $column->row(new Examples\Sessions());
+                    // $column->row(new Examples\Sessions());
                     
                 });
             });

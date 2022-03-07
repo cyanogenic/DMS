@@ -21,6 +21,7 @@ class CreateMembersTable extends Migration
             $table->unsignedSmallInteger('dkp')->default(0)->comment('DKP');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
