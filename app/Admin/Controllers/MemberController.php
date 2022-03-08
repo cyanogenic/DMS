@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Renderable\AliasTable;
+use App\Models\Alias;
 use App\Models\Member;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
@@ -57,8 +58,25 @@ class MemberController extends AdminController
             $show->field('name');
             $show->field('dkp');
             $show->field('innercity');
+
             $show->field('created_at');
             $show->field('updated_at');
+
+            $show->relation('alias', function ($model) {
+                $grid = new Grid(new Alias);
+
+                $grid->model()->where('member_id', $model->id);
+
+                $grid->name;
+                $grid->updated_at;
+                
+                $grid->disableActions();
+                $grid->disableRefreshButton();
+                $grid->disableCreateButton();
+                $grid->disableRowSelector();
+                
+                return $grid;
+            });
         });
     }
 

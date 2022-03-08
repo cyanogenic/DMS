@@ -10,10 +10,43 @@ use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
+use Dcat\Admin\Layout\Content;
 use Illuminate\Support\Facades\DB;
 
 class EventController extends AdminController
 {
+    public function index(Content $content)
+    {
+        return $content
+            ->header('Modal Form')
+            ->body($this->build())
+            ->body($this->grid());
+    }
+
+    protected function build()
+    {
+        Form::dialog('新增角色')
+            ->click('.create-form') // 绑定点击按钮
+            ->url('auth/roles/create') // 表单页面链接，此参数会被按钮中的 “data-url” 属性替换。。
+            ->width('700px') // 指定弹窗宽度，可填写百分比，默认 720px
+            ->height('650px') // 指定弹窗高度，可填写百分比，默认 690px
+            ->success('Dcat.reload()'); // 新增成功后刷新页面
+
+        Form::dialog('编辑角色')
+            ->click('.edit-form')
+            ->success('Dcat.reload()'); // 编辑成功后刷新页面
+
+        // 当需要在同个“class”的按钮中绑定不同的链接时，把链接放到按钮的“data-url”属性中即可
+        $editPage = admin_base_path('auth/roles/1/edit');
+
+        return "
+<div style='padding:30px 0'>
+    <span class='btn btn-success create-form'> 新增表单弹窗 </span> &nbsp;&nbsp;
+    <span class='btn btn-blue edit-form' data-url='{$editPage}'> 编辑表单弹窗 </span>
+</div>
+";
+    }
+
     /**
      * Make a grid builder.
      *
@@ -52,6 +85,11 @@ class EventController extends AdminController
             });
             $show->field('scoring.name', __('计分项'));
             $show->field('point');
+            $show->field('comment');
+
+            $show->field('created_at');
+            $show->field('updated_at');
+
             $show->relation('member', function ($model) {
                 $grid = new Grid(new Member);
 
@@ -70,10 +108,6 @@ class EventController extends AdminController
                 
                 return $grid;
             });
-            $show->field('comment');
-
-            $show->field('created_at');
-            $show->field('updated_at');
         });
     }
 
