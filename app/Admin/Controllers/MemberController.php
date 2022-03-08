@@ -25,6 +25,7 @@ class MemberController extends AdminController
                 'nickname' => '昵称',
                 'name' => '游戏ID',
                 'dkp' => 'dkp',
+                'innercity' => '上次内城',
             ]);
 
             $grid->nickname();
@@ -36,6 +37,7 @@ class MemberController extends AdminController
                     return AliasTable::make();
             });
             $grid->dkp()->sortable();
+            $grid->innercity()->sortable();
             $grid->created_at()->sortable();
             $grid->updated_at()->sortable();
         });
@@ -54,6 +56,7 @@ class MemberController extends AdminController
             $show->field('nickname');
             $show->field('name');
             $show->field('dkp');
+            $show->field('innercity');
             $show->field('created_at');
             $show->field('updated_at');
         });
@@ -67,9 +70,17 @@ class MemberController extends AdminController
     protected function form()
     {
         return Form::make(new Member(), function (Form $form) {
-            $form->text('nickname')->required();
-            $form->text('name')->required();
+            $form->text('nickname')->rules(
+                function (Form $form) { if (!$id = $form->model()->id) { return 'unique:members,nickname'; } },
+                [ 'unique' => '该昵称已存在' ]
+            );
+            $form->text('name')->required()->rules(
+                function (Form $form) { if (!$id = $form->model()->id) { return 'unique:members,name'; } },
+                [ 'unique' => '该ID已存在' ]
+            );
+
             $form->number('dkp');
+            $form->date('innercity');
             
             $form->saving(function (Form $form) {
                 // 判断是否是修改操作

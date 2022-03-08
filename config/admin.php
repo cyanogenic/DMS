@@ -11,7 +11,7 @@ return [
     | login page.
     |
     */
-    'name' => 'DKP Management System',
+    'name' => env('APP_NAME', 'Dcat Admin'),
 
     /*
     |--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ return [
     | Html title for all pages.
     |
     */
-    'title' => 'DMS',
+    'title' => env('ADMIN_TITLE', 'Admin'),
 
     /*
     |--------------------------------------------------------------------------

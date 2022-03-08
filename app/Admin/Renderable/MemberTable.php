@@ -19,7 +19,8 @@ class MemberTable extends LazyRenderable
             $grid->column('updated_at');
 
             $grid->paginate(10);
-            $grid->perPages([10, 20, 50, 100, 200]);
+            // 选了会报错，原因未知
+            // $grid->perPages([10, 20, 50, 100, 200]);
             $grid->disableActions();
         });
     }

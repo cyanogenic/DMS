@@ -9,6 +9,7 @@ return [
         'name' => '游戏ID',
         'dkp' => 'DKP',
         'alias' => '曾用名',
+        'innercity' => '上次内城',
     ],
     'options' => [
     ],
