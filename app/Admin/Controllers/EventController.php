@@ -21,7 +21,7 @@ class EventController extends AdminController
      */
     protected function grid()
     {
-        return Grid::make(Event::with(['scoring', 'member']), function (Grid $grid) {            
+        return Grid::make(Event::with(['scoring', 'member', 'admin_user']), function (Grid $grid) {            
             $grid->tools(function (Grid\Tools $tools) {
                 $tools->append(function () {
                     Form::dialog('创建活动记录')
@@ -46,7 +46,9 @@ class EventController extends AdminController
             $grid->column('scoring.name', __('计分项'))->width('10%');
             $grid->column('point');
             $grid->column('member')->width('40%')->pluck('name')->badge();
-            $grid->column('comment')->width('20%');
+            $grid->column('comment')->width('15%');
+
+            $grid->column('admin_user.name', __('管理员'));
             
             $grid->column('updated_at');
         });
