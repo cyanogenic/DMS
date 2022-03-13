@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Renderable\AliasTable;
 use App\Models\Alias;
+use App\Models\Event;
 use App\Models\Member;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
@@ -61,6 +62,30 @@ class MemberController extends AdminController
 
             $show->field('created_at');
             $show->field('updated_at');
+
+            $show->relation('events', function ($model) {
+                $grid = Grid::make(Event::with(['scoring']));
+            
+                $grid->model()->join('event_member', function ($join) use ($model) {
+                    $join->on('event_member.event_id', 'id')
+                        ->where('member_id', '=', $model->id);
+                });
+
+                $grid->model()->orderBy('time', 'desc');
+                $grid->column('time', __('时间'))->sortable()->display(function ($time) {
+                    return date("Y-m-d H:i", strtotime($time));
+                });;
+                $grid->column('scoring.name', __('计分项'));
+                $grid->column('point', __('分值'));
+                $grid->column('comment', __('说明'));
+
+                $grid->disableActions();
+                $grid->disableRefreshButton();
+                $grid->disableCreateButton();
+                $grid->disableRowSelector();
+
+                return $grid;
+            });
 
             $show->relation('alias', function ($model) {
                 $grid = new Grid(new Alias);

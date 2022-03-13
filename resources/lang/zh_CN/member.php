@@ -10,6 +10,7 @@ return [
         'dkp' => 'DKP',
         'alias' => '曾用名',
         'innercity' => '上次内城',
+        'events' => '活动记录',
     ],
     'options' => [
     ],
