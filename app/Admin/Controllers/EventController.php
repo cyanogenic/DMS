@@ -6,6 +6,7 @@ use App\Admin\Renderable\MemberTable;
 use App\Models\Event;
 use App\Models\Member;
 use App\Models\Scoring;
+use Dcat\Admin\Admin;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
@@ -124,18 +125,18 @@ class EventController extends AdminController
                     return array_column($v, 'id');
                 });
             $form->text('comment');
+            $form->number('admin_user_id')->display(0);
         
-            // 提交时填充point字段
             $form->saving(function (Form $form) {
-                if (!$form->custom_point) {
-                    $form->point = DB::table('scorings')->where('id', $form->scoring_id)->value('point');
-                }
+                // 填充管理员ID
+                if ($form->isCreating()) {  $form->admin_user_id = Admin::user()->id; }
+                // 提交时填充point字段
+                if (!$form->custom_point) { $form->point = DB::table('scorings')->where('id', $form->scoring_id)->value('point'); }
                 // 不提交自定义分值的开关
                 $form->deleteInput('custom_point');
 
                 // TODO 快看,是脑瘫代码
                 // 修改操作前先减
-                $a = $form->getKey();
                 DB::update(
                     'UPDATE members SET dkp = dkp - (SELECT point FROM `events` WHERE id = ?) WHERE id IN (SELECT member_id from event_member WHERE event_id = ?)',
                     [$form->getKey(), $form->getKey()]
