@@ -113,14 +113,11 @@ class MemberController extends AdminController
     protected function form()
     {
         return Form::make(new Member(), function (Form $form) {
-            $form->text('nickname')->rules(
-                function (Form $form) { if (!$id = $form->model()->id) { return 'unique:members,nickname'; } },
-                [ 'unique' => '该昵称已存在' ]
-            );
-            $form->text('name')->required()->rules(
-                function (Form $form) { if (!$id = $form->model()->id) { return 'unique:members,name'; } },
-                [ 'unique' => '该ID已存在' ]
-            );
+            $id = $form->model()->id;
+            $form->text('nickname')
+                ->rules("nullable|unique:members,nickname,$id", [ 'unique' => '该昵称已存在' ]);
+            $form->text('name')->required()
+                ->rules("unique:members,name,$id|unique:alias,name,$id", [ 'unique' => '该ID已存在' ]);
 
             $form->number('dkp');
             $form->date('innercity');
@@ -132,7 +129,7 @@ class MemberController extends AdminController
                     $id = $form->getKey();
                     $timestamp = date("Y-m-d H:i:s");
                     
-                    //取当前名称
+                    // 取当前名称
                     $name_current = DB::table('members')->where('id', $id)->value('name');
                     if ($name_coming != $name_current) {
                         DB::table('alias')->insert([
