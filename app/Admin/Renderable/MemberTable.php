@@ -18,7 +18,11 @@ class MemberTable extends LazyRenderable
             $grid->column('alias')->pluck('name')->display(function ($alias) {
                 $data = array();
                 foreach ($alias as $value) {
-                    if (!in_array($value, $data)) { array_push($data, $value); }
+                    if (!in_array($value, $data)) {
+                        if ($value != $this->name) {
+                            array_push($data, $value);
+                        }
+                    }
                 }
                 return $data;
             })->badge();

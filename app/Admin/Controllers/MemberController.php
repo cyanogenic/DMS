@@ -36,7 +36,8 @@ class MemberController extends AdminController
             $grid->alias()
                 ->display('查看')
                 ->modal(function ($modal){
-                    $modal->title($this->name . '的曾用名');
+                    if ($this->nickname) { $modal->title($this->nickname . "的曾用名"); }
+                    else { $modal->title($this->name . "的曾用名"); }
                     return AliasTable::make();
             });
             $grid->dkp()->sortable();
