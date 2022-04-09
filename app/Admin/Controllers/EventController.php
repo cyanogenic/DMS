@@ -116,6 +116,7 @@ class EventController extends AdminController
 
             $form->multipleSelectTable('member', __('参与玩家'))
                 ->title('参与玩家')
+                ->dialogWidth('75%')
                 ->from(MemberTable::make())
                 ->model(Member::class, 'id', 'name')
                 ->required()

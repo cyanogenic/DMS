@@ -10,6 +10,7 @@ return [
         'comment' => '说明',
         'member' => '参与玩家',
         'nickname' => '昵称',
+        'alias' => '曾用名',
         'custom_point' => '自定义分值',
     ],
     'options' => [

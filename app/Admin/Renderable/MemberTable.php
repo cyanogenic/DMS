@@ -15,12 +15,10 @@ class MemberTable extends LazyRenderable
 
             $grid->column('name');
             $grid->column('nickname');
-            // $grid->column('created_at');
+            $grid->column('alias')->pluck('name')->badge();
             $grid->column('updated_at');
 
-            $grid->paginate(10);
-            // 选了会报错，原因未知
-            // $grid->perPages([10, 20, 50, 100, 200]);
+            $grid->paginate(15);
             $grid->disableActions();
         });
     }
