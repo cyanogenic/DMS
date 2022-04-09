@@ -15,7 +15,13 @@ class MemberTable extends LazyRenderable
 
             $grid->column('name');
             $grid->column('nickname');
-            $grid->column('alias')->pluck('name')->badge();
+            $grid->column('alias')->pluck('name')->display(function ($alias) {
+                $data = array();
+                foreach ($alias as $value) {
+                    if (!in_array($value, $data)) { array_push($data, $value); }
+                }
+                return $data;
+            })->badge();
             $grid->column('updated_at');
 
             $grid->paginate(15);

@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Actions\Grid\ResetMemberName;
 use App\Admin\Renderable\AliasTable;
 use App\Models\Alias;
 use App\Models\Event;
@@ -42,6 +43,10 @@ class MemberController extends AdminController
             $grid->innercity()->sortable();
             $grid->created_at()->sortable();
             $grid->updated_at()->sortable();
+
+            $grid->actions(function (Grid\Displayers\Actions $actions) {
+                $actions->append(new ResetMemberName());
+            });
         });
     }
 
@@ -117,7 +122,8 @@ class MemberController extends AdminController
             $form->text('nickname')
                 ->rules("nullable|unique:members,nickname,$id", [ 'unique' => '该昵称已存在' ]);
             $form->text('name')->required()
-                ->rules("unique:members,name,$id|unique:alias,name,$id", [ 'unique' => '该ID已存在' ]);
+                // 不允许修改为其它人的ID和曾用名
+                ->rules("unique:members,name,$id|unique:alias,name,$id,member_id", [ 'unique' => '该ID已存在' ]);
 
             $form->number('dkp');
             $form->date('innercity');

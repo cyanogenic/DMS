@@ -21,7 +21,7 @@ class CreateAliasTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->string('name')->unique()->comment('曾用名');
+            $table->string('name')->comment('曾用名');
             
             $table->timestamps();
         });
