@@ -8,8 +8,6 @@ use Dcat\Admin\Grid\RowAction;
 
 class ResetMemberName extends RowAction
 {
-    protected $title = '改回曾用名';
-
     public function render()
     {
         // 实例化表单类并传递自定义参数
@@ -18,10 +16,13 @@ class ResetMemberName extends RowAction
             'name' => $this->row->name,
         ]);
 
+        if ($this->row->nickname) { $member_name = $this->row->nickname; }
+        else { $member_name = $this->row->name; }
+        
         return Modal::make()
             ->lg()
-            ->title($this->title)
+            ->title($member_name . '的曾用名')
             ->body($form)
-            ->button($this->title);
+            ->button('<i class="feather icon-edit-1"></i> 改回曾用名');
     }
 }

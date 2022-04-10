@@ -3,6 +3,7 @@
 namespace App\Admin\Forms;
 
 use App\Models\Alias;
+use App\Models\Member;
 use Dcat\Admin\Contracts\LazyRenderable;
 use Dcat\Admin\Traits\LazyWidget;
 use Dcat\Admin\Widgets\Form;
@@ -20,7 +21,14 @@ class ResetMemberName extends Form implements LazyRenderable
      */
     public function handle(array $input)
     {
-        $name = $input['name'] ?? null;
+        // 更新Alias表
+        Alias::create([
+            'member_id' => $this->payload['id'],
+            'name' => $this->payload['name'],
+        ]);
+        // 改回曾用名
+        $member = Member::find($this->payload['id']);
+        $member->update(['name' => $input['alias']]);
         return $this->response()->success('修改成功')->refresh();
     }
 
@@ -29,22 +37,19 @@ class ResetMemberName extends Form implements LazyRenderable
      */
     public function form()
     {
-        // 获取外部传递参数
-        $id = $this->payload['id'] ?? null;
-
-        $alias = Alias::select('id', 'name')->where('member_id', $id)->get()->toarray();
-        $names = array();
+        $alias = Alias::select('name')->where('member_id', $this->payload['id'])->get()->toarray();
+        $options = array();
         foreach ($alias as $value) {
             // 曾用名去重
-            if (!array_search($value['name'], $names)) {
+            if (!array_search($value['name'], $options)) {
                 // 当前名称去重
                 if ($this->payload['name'] != $value['name']) {
-                    $names[$value['id']] = $value['name'];
+                    $options[$value['name']] = $value['name'];
                 }
             }   
         }
-        $this->select('name')
-            ->options($names)
+        $this->select('alias')
+            ->options($options)
             ->required();
     }
 }

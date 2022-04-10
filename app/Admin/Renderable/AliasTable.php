@@ -13,6 +13,7 @@ class AliasTable extends LazyRenderable
         $id = $this->key;
 
         $data = Alias::where('member_id', $id)
+            ->orderBy('updated_at', 'desc')
             ->get(['name', 'updated_at'])
             ->toArray();
 

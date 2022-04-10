@@ -12,6 +12,16 @@ class Member extends Model
 	use HasDateTimeFormatter;
 
 	use SoftDeletes;
+
+	protected $table = 'members';
+
+	protected $fillable = 
+	[
+		'nickname',
+        'name',
+		'dkp',
+		'innercity',
+	];
 	
 	public function alias() { return $this->hasMany(Alias::class); }
 }

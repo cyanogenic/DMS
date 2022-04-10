@@ -97,6 +97,7 @@ class MemberController extends AdminController
                 $grid = new Grid(new Alias);
 
                 $grid->model()->where('member_id', $model->id);
+                $grid->model()->orderBy('updated_at', 'desc');
 
                 $grid->name;
                 $grid->updated_at;
@@ -132,18 +133,10 @@ class MemberController extends AdminController
             $form->saving(function (Form $form) {
                 // 判断是否是修改操作
                 if ($form->isEditing()) {
-                    $name_coming = $form->name;
-                    $id = $form->getKey();
-                    $timestamp = date("Y-m-d H:i:s");
-                    
-                    // 取当前名称
-                    $name_current = DB::table('members')->where('id', $id)->value('name');
-                    if ($name_coming != $name_current) {
-                        DB::table('alias')->insert([
-                            'member_id' => $id,
-                            'name' => $name_current,
-                            'created_at' => $timestamp,
-                            'updated_at' => $timestamp,
+                    if ($form->name != $form->model()->name) {
+                        Alias::create([
+                            'member_id' => $form->getKey(),
+                            'name' => $form->model()->name,
                         ]);
                     }
                 }
