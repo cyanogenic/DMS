@@ -127,12 +127,39 @@ class MemberController extends AdminController
                 // 不允许修改为其它人的ID和曾用名
                 ->rules("unique:members,name,$id|unique:alias,name,$id,member_id", [ 'unique' => '该ID已存在' ]);
 
-            $form->number('dkp');
+            if ($form->isCreating()) {
+                $form->number('dkp');
+            }
+            else {
+                $form->radio('dkp_type')
+                    ->when(0, function (Form $form) {
+                        $form->number('dkp');
+                    })
+                    ->when(1, function (Form $form) { 
+                        $form->number('dkp_minus')
+                            ->help(($form->model()->nickname ?? $form->model()->name) . '当前的DKP: ' . $form->model()->dkp);
+                    })
+                    ->options([
+                        0 => __('member.fields.dkp_set'),
+                        1 => __('member.fields.dkp_minus'),
+                    ])
+                    ->default('0', true);
+            }
+
             $form->date('innercity');
             
             $form->saving(function (Form $form) {
-                // 判断是否是修改操作
                 if ($form->isEditing()) {
+                    // DKP扣除
+                    if ($form->dkp_minus > $form->model()->dkp) {
+                        // 中断后续逻辑
+                        return $form->response()->error('扣除的DKP大于' . ($form->model()->nickname ?? $form->model()->name) . '当前的DKP');
+                    }
+                    if ($form->dkp_type) {
+                        $form->dkp = $form->model()->dkp - $form->dkp_minus;
+                    }
+                    $form->deleteInput(['dkp_type', 'dkp_minus']);
+                    // 添加曾用名
                     if ($form->name != $form->model()->name) {
                         Alias::create([
                             'member_id' => $form->getKey(),

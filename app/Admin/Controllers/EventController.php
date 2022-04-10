@@ -112,7 +112,7 @@ class EventController extends AdminController
             $form->radio('custom_point')
                 ->when(1, function (Form $form) { $form->number('point'); })
                 ->options([ 0 => '否', 1 => '是' ])
-                ->default(0);
+                ->default(0, true);
 
             $form->multipleSelectTable('member', __('参与玩家'))
                 ->title('参与玩家')
@@ -144,8 +144,7 @@ class EventController extends AdminController
                 );
             });
 
-            // result未使用
-            $form->saved(function (Form $form, $result) {
+            $form->saved(function (Form $form) {
                 $newId = $form->getKey();
                 // 新增或修改后重新加DKP
                 DB::update(
