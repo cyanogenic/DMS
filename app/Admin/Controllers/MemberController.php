@@ -23,7 +23,10 @@ class MemberController extends AdminController
     protected function grid()
     {
         return Grid::make(Member::with(['alias']), function (Grid $grid) {
+            $grid->model()->orderBy('dkp', 'desc');
+
             $grid->quickSearch('name', 'nickname', 'alias.name');
+            
             $grid->export()->titles([
                 'nickname' => '昵称',
                 'name' => '游戏ID',
