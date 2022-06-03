@@ -132,7 +132,7 @@ class EventController extends AdminController
             // 同时取name和point
             $form->select('scoring_id', __('计分项'))->options(Scoring::all()->pluck('name', 'id'))
                 ->required()
-                ->default($template->scoring_id ?? null);
+                ->default($template ? $template->scoring_id : null);
             $form->radio('custom_point')
                 ->when(1, function (Form $form) { $form->number('point'); })
                 ->options([ 0 => '否', 1 => '是' ])
@@ -149,7 +149,7 @@ class EventController extends AdminController
                     // 这一步非常重要，需要把数据库中查出来的二维数组转化成一维数组
                     return array_column($v, 'id');
                 })
-                ->default(array_column($template->member->toarray(), 'id'));
+                ->default($template ? array_column($template->member->toarray(), 'id') : null);
             $form->text('comment');
             $form->number('admin_user_id')->display(0);
         
