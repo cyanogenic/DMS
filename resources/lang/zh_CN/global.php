@@ -11,6 +11,7 @@ return [
         'password_confirmation' => '确认密码',
         'created_at'            => '创建时间',
         'updated_at'            => '更新时间',
+        'deleted_at'            => '删除时间',
         'permissions'           => '权限',
         'slug'                  => '标识',
         'user'                  => '用户',

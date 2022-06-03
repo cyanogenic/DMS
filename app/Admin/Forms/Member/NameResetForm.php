@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Forms;
+namespace App\Admin\Forms\Member;
 
 use App\Models\Alias;
 use App\Models\Member;
@@ -8,7 +8,7 @@ use Dcat\Admin\Contracts\LazyRenderable;
 use Dcat\Admin\Traits\LazyWidget;
 use Dcat\Admin\Widgets\Form;
 
-class ResetMemberName extends Form implements LazyRenderable
+class NameResetForm extends Form implements LazyRenderable
 {
     use LazyWidget;
     

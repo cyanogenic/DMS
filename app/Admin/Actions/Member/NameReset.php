@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Admin\Actions\Grid;
+namespace App\Admin\Actions\Member;
 
-use App\Admin\Forms\ResetMemberName as ResetMemberNameForm;
+use App\Admin\Forms\Member\NameResetForm;
 use Dcat\Admin\Widgets\Modal;
 use Dcat\Admin\Grid\RowAction;
 
-class ResetMemberName extends RowAction
+class NameReset extends RowAction
 {
     public function render()
     {
         // 实例化表单类并传递自定义参数
-        $form = ResetMemberNameForm::make()->payload([
+        $form = NameResetForm::make()->payload([
             'id' => $this->getKey(),
             'name' => $this->row->name,
         ]);

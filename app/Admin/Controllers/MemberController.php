@@ -2,7 +2,9 @@
 
 namespace App\Admin\Controllers;
 
-use App\Admin\Actions\Grid\ResetMemberName;
+use App\Admin\Actions\Member\BatchRestore;
+use App\Admin\Actions\Member\NameReset;
+use App\Admin\Actions\Member\Restore;
 use App\Admin\Renderable\AliasTable;
 use App\Models\Alias;
 use App\Models\Event;
@@ -11,7 +13,6 @@ use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
-use Illuminate\Support\Facades\DB;
 
 class MemberController extends AdminController
 {
@@ -25,7 +26,25 @@ class MemberController extends AdminController
         return Grid::make(Member::with(['alias']), function (Grid $grid) {
             $grid->model()->orderBy('dkp', 'desc');
 
+            // 回收站
+            if (request('_scope_') == 'trashed') { $grid->model()->onlyTrashed(); }
+
             $grid->quickSearch('name', 'nickname', 'alias.name');
+
+            $grid->tools(function (Grid\Tools $tools) {
+                $tools->append(function () {
+                    $href = request('_scope_') ? admin_url('members') : admin_url('members?_scope_=trashed');
+                    $icon = request('_scope_') ? 'icon-check-circle' : 'icon-circle';
+                    return '
+                    <a href="' . $href . '">
+                        <button class="btn btn-primary btn-mini btn-outline" style="margin-right:3px">
+                            <i class="feather ' . $icon . '"></i>
+                            <span class="d-none d-sm-inline">回收站</span>
+                        </button>
+                    </a>
+                    ';
+                });
+            });
             
             $grid->export()->titles([
                 'nickname' => '昵称',
@@ -47,9 +66,18 @@ class MemberController extends AdminController
             $grid->innercity()->sortable();
             $grid->created_at()->sortable();
             $grid->updated_at()->sortable();
+            if (request('_scope_') == 'trashed') { $grid->deleted_at()->sortable(); }
 
             $grid->actions(function (Grid\Displayers\Actions $actions) {
-                $actions->append(new ResetMemberName());
+                // 改回曾用名
+                $actions->append(new NameReset());
+                // 回收站还原
+                if (request('_scope_') == 'trashed') { $actions->append(new Restore(Member::class)); }
+            });
+
+            $grid->batchActions(function (Grid\Tools\BatchActions $batch) {
+                // 回收站批量还原
+                if (request('_scope_') == 'trashed') { $batch->add(new BatchRestore(Member::class)); }
             });
         });
     }
