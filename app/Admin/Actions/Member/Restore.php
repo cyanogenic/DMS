@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class Restore extends RowAction
 {
-    protected $title = '恢复';
+    protected $title = '<i class="feather icon-rotate-ccw"></i> 恢复';
 
     protected $model;
 

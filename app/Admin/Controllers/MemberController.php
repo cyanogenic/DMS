@@ -68,9 +68,14 @@ class MemberController extends AdminController
             $grid->updated_at()->sortable();
             if (request('_scope_') == 'trashed') { $grid->deleted_at()->sortable(); }
 
+            // 回收站内的数据不允许编辑
+            if (request('_scope_') == 'trashed') {
+                $grid->disableEditButton();
+            }
+
             $grid->actions(function (Grid\Displayers\Actions $actions) {
                 // 改回曾用名
-                $actions->append(new NameReset());
+                if (request('_scope_') != 'trashed') { $actions->append(new NameReset()); }
                 // 回收站还原
                 if (request('_scope_') == 'trashed') { $actions->append(new Restore(Member::class)); }
             });
@@ -99,6 +104,11 @@ class MemberController extends AdminController
 
             $show->field('created_at');
             $show->field('updated_at');
+            // 回收站内的数据不允许编辑
+            if ($show->model()->deleted_at) {
+                $show->field('deleted_at');
+                $show->disableEditButton();
+            }
 
             $show->relation('events', function ($model) {
                 $grid = Grid::make(Event::with(['scoring']));
