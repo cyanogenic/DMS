@@ -12,9 +12,23 @@ use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 
 class EventController extends AdminController
 {
+    public $url_query = array();
+
+    public function __construct()
+    {
+        // 处理URL参数
+        parse_str(parse_url(URL::full())['query'] ?? null, $this->url_query);
+    }
+
+    public function urlQuery($key)
+    {
+        return $this->url_query[$key] ?? null;
+    }
+
     /**
      * Make a grid builder.
      *
@@ -37,6 +51,11 @@ class EventController extends AdminController
                         </button>
                     ";
                 });
+            });
+
+            // 复制按钮
+            $grid->actions(function (Grid\Displayers\Actions $actions) {
+                $actions->append('<a href="' . admin_url('events/create?template=') . $this->getKey() . '"><i class="feather icon-copy"></i> 复制</a>');
             });
 
             $grid->model()->orderBy('time', 'desc');
@@ -105,10 +124,15 @@ class EventController extends AdminController
     protected function form()
     {
         return Form::make(Event::with(['scoring', 'member']), function (Form $form) {
+            // 获取要复制的行的ID
+            $template = Event::find($this->urlQuery('template'));
+
             $form->datetime('time')->format('YYYY-MM-DD HH:mm')
                 ->default(date("Y-m-d H:i:s"))->required();
             // 同时取name和point
-            $form->select('scoring_id', __('计分项'))->options(Scoring::all()->pluck('name', 'id'))->required();
+            $form->select('scoring_id', __('计分项'))->options(Scoring::all()->pluck('name', 'id'))
+                ->required()
+                ->default($template->scoring_id ?? null);
             $form->radio('custom_point')
                 ->when(1, function (Form $form) { $form->number('point'); })
                 ->options([ 0 => '否', 1 => '是' ])
@@ -124,7 +148,8 @@ class EventController extends AdminController
                     if (!$v) return [];
                     // 这一步非常重要，需要把数据库中查出来的二维数组转化成一维数组
                     return array_column($v, 'id');
-                });
+                })
+                ->default(array_column($template->member->toarray(), 'id'));
             $form->text('comment');
             $form->number('admin_user_id')->display(0);
         
