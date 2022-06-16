@@ -28,6 +28,20 @@ class EventController extends AdminController
         return Grid::make(Event::with(['scoring', 'member', 'admin_user']), function (Grid $grid) {            
             $grid->tools(function (Grid\Tools $tools) {
                 $tools->append(function () {
+                    Form::dialog('创建活动记录')
+                        ->click('.create-form')     // 绑定点击按钮
+                        ->url('events/create')      // 表单页面链接，此参数会被按钮中的 “data-url” 属性替换
+                        ->width('50%')
+                        ->success('Dcat.reload()'); // 新增成功后刷新页面
+                    return "
+                        <button class='btn btn-primary btn-mini btn-outline'>
+                            <i class='feather icon-plus-square'></i>
+                            <span class='create-form'>在弹窗中新增</span>
+                        </button>
+                    ";
+                });
+                
+                $tools->append(function () {
                     return Modal::make()
                         ->xl()
                         ->title('使用截图创建')
