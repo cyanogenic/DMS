@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateMemberNicknameUnique extends Migration
+class CreateOcrResultsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class UpdateMemberNicknameUnique extends Migration
      */
     public function up()
     {
-        Schema::table('members', function (Blueprint $table) {
-            $table->string('nickname')->nullable()->unique()->comment('昵称')->change();
+        Schema::create('ocr_results', function (Blueprint $table) {
+            $table->id();
+            $table->string('image');
+            $table->string('md5')->unique();
+            $table->string('res');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class UpdateMemberNicknameUnique extends Migration
      */
     public function down()
     {
-        Schema::table('members', function (Blueprint $table) {
-            $table->dropUnique('members_nickname_unique');
-        });
+        Schema::dropIfExists('ocr_results');
     }
 }

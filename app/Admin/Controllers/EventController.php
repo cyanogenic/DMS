@@ -2,15 +2,18 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Actions\Event\UploadScreenShot;
 use App\Admin\Renderable\MemberTable;
 use App\Models\Event;
 use App\Models\Member;
+use App\Models\OCRResult;
 use App\Models\Scoring;
 use Dcat\Admin\Admin;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
 use Dcat\Admin\Show;
 use Dcat\Admin\Http\Controllers\AdminController;
+use Dcat\Admin\Widgets\Modal;
 use Illuminate\Support\Facades\DB;
 
 class EventController extends AdminController
@@ -25,17 +28,11 @@ class EventController extends AdminController
         return Grid::make(Event::with(['scoring', 'member', 'admin_user']), function (Grid $grid) {            
             $grid->tools(function (Grid\Tools $tools) {
                 $tools->append(function () {
-                    Form::dialog('创建活动记录')
-                        ->click('.create-form')     // 绑定点击按钮
-                        ->url('events/create')      // 表单页面链接，此参数会被按钮中的 “data-url” 属性替换
-                        ->width('50%')
-                        ->success('Dcat.reload()'); // 新增成功后刷新页面
-                    return '
-                    <button class="create-form btn btn-primary btn-mini btn-outline" style="margin-right:3px">
-                        <i class="feather icon-plus-square"></i>
-                        <span class="d-none d-sm-inline">在弹窗中新增</span>
-                    </button>
-                    ';
+                    return Modal::make()
+                        ->xl()
+                        ->title('使用截图创建')
+                        ->body(UploadScreenShot::make())
+                        ->button('<button class="btn btn-primary btn-mini btn-outline">使用截图创建</button>');
                 });
             });
 
@@ -112,6 +109,8 @@ class EventController extends AdminController
         return Form::make(Event::with(['scoring', 'member']), function (Form $form) {
             // 获取要复制的行的ID
             $template = Event::find(request('template'));
+            // 获取OCR的ID
+            $ocr = OCRResult::find(request('ocr'));
 
             $form->datetime('time')->format('YYYY-MM-DD HH:mm')
                 ->default(date("Y-m-d H:i:s"))->required();
@@ -135,7 +134,13 @@ class EventController extends AdminController
                     // 这一步非常重要，需要把数据库中查出来的二维数组转化成一维数组
                     return array_column($v, 'id');
                 })
-                ->default($template ? array_column($template->member->toarray(), 'id') : null);
+                ->default(function () use ($ocr, $template){
+                    if ($ocr) {
+                        return $ocr->res;
+                    } elseif ($template) {
+                        return array_column($template->member->toarray(), 'id');
+                    }
+                });
             $form->text('comment');
             $form->number('admin_user_id')->display(0);
         

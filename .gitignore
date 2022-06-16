@@ -28,3 +28,6 @@ Homestead.yaml
 # IDE
 /.idea
 /.vscode
+
+# MeiliSearch
+/meili_data

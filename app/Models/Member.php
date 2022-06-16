@@ -6,11 +6,12 @@ use Dcat\Admin\Traits\HasDateTimeFormatter;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 class Member extends Model
 {
 	use HasDateTimeFormatter;
-
+	use Searchable;
 	use SoftDeletes;
 
 	protected $table = 'members';
