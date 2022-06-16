@@ -25,4 +25,9 @@ class Member extends Model
 	];
 	
 	public function alias() { return $this->hasMany(Alias::class); }
+
+	public function toSearchableArray()
+    {
+        return [ 'name' => $this->name ];
+    }
 }

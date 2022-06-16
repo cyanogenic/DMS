@@ -53,9 +53,11 @@ class UploadScreenShot extends Form implements LazyRenderable
                 $ocr_res = array();
                 foreach ($resp->TextDetections as $textDetection) {
                     $member = Member::search($textDetection->DetectedText)->get();
-                    // TODO 现阶段认为只识别到一个的情况为识别成功
+                    // TODO 现阶段认为只识别到一个且不重复的情况为识别成功
                     if ($member->count() == 1) {
-                        array_push($ocr_res, $member->first()->id);
+                        if (! in_array($member->first()->id, $ocr_res)) {
+                            array_push($ocr_res, $member->first()->id);
+                        }
                     }
                 }
 
