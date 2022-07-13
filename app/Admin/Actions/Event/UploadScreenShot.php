@@ -2,7 +2,7 @@
 
 namespace App\Admin\Actions\Event;
 
-use App\Models\Member;
+use App\Models\Account;
 use App\Models\OCRResult;
 use Dcat\Admin\Admin;
 use Dcat\Admin\Contracts\LazyRenderable;
@@ -50,18 +50,20 @@ class UploadScreenShot extends Form implements LazyRenderable
             
                 $resp = $client->GeneralAccurateOCR($req);
 
-                $ocr_res = array();
+                // TODO 保存原始的OCR结果,方便改进OCR策略
+                // FIX 
+                $players = array();
                 foreach ($resp->TextDetections as $textDetection) {
-                    $member = Member::search($textDetection->DetectedText)->get();
+                    $account = Account::search($textDetection->DetectedText)->get();
                     // TODO 现阶段认为只识别到一个且不重复的情况为识别成功
-                    if ($member->count() == 1) {
-                        if (! in_array($member->first()->id, $ocr_res)) {
-                            array_push($ocr_res, $member->first()->id);
+                    if ($account->count() == 1) {
+                        if (! in_array($account->first()->account_id, $players)) {
+                            array_push($players, $account->first()->account_id);
                         }
                     }
                 }
 
-                $ocr->res = implode(',', $ocr_res);
+                $ocr->res = implode(',', $players);
                 $ocr->save();
 
             } catch(TencentCloudSDKException $e) { return $this->response()->error($e); }

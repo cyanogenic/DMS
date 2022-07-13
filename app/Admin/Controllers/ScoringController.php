@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Utils\ContextMenuWash;
 use App\Models\Scoring;
 use Dcat\Admin\Form;
 use Dcat\Admin\Grid;
@@ -17,7 +18,12 @@ class ScoringController extends AdminController
      */
     protected function grid()
     {
+        ContextMenuWash::wash();
+
         return Grid::make(new Scoring(), function (Grid $grid) {
+            // TODO 删除关联了Event的Scoring时的自定义报错
+            $grid->disableDeleteButton();
+
             $grid->column('name');
             $grid->column('point')->sortable();
             $grid->column('comment');
@@ -37,6 +43,11 @@ class ScoringController extends AdminController
     protected function detail($id)
     {
         return Show::make($id, new Scoring(), function (Show $show) {
+            $show->panel()->tools(function ($tools) {
+                // TODO 删除关联了Event的Scoring时的自定义报错
+                $tools->disableDelete();
+            });
+
             $show->field('name');
             $show->field('point');
             $show->field('comment');
@@ -53,6 +64,9 @@ class ScoringController extends AdminController
     protected function form()
     {
         return Form::make(new Scoring(), function (Form $form) {
+            // TODO 删除关联了Event的Scoring时的自定义报错
+            $form->disableDeleteButton();
+            
             $form->text('name')->required();
             $form->number('point')->required();
             $form->text('comment');

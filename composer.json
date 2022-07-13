@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "cyanogenic/laravel-dms",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "A DKP management project powered by the Laravel Framework.",
+    "keywords": ["DKP", "PHP", "laravel"],
     "license": "MIT",
     "require": {
         "php": "^8.0",
@@ -16,6 +16,7 @@
         "laravel/scout": "^9.4",
         "laravel/tinker": "^2.5",
         "meilisearch/meilisearch-php": "^0.23.2",
+        "owen-it/laravel-auditing": "^13.0",
         "tencentcloud/tencentcloud-sdk-php": "^3.0"
     },
     "require-dev": {

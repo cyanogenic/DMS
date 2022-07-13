@@ -2,8 +2,8 @@
 
 namespace App\Admin\Forms\Member;
 
-use App\Models\Alias;
-use App\Models\Member;
+use App\Models\Account;
+use App\Models\FormerName;
 use Dcat\Admin\Contracts\LazyRenderable;
 use Dcat\Admin\Traits\LazyWidget;
 use Dcat\Admin\Widgets\Form;
@@ -21,14 +21,16 @@ class NameResetForm extends Form implements LazyRenderable
      */
     public function handle(array $input)
     {
-        // 更新Alias表
-        Alias::create([
-            'member_id' => $this->payload['id'],
-            'name' => $this->payload['name'],
-        ]);
-        // 改回曾用名
-        $member = Member::find($this->payload['id']);
-        $member->update(['name' => $input['alias']]);
+        // 就像曾经交换过姓名
+        $account = Account::find($this->payload['id']);
+        $former_name = FormerName::find($input['former_name_id']);
+        $old_name = $former_name->name;
+        
+        $former_name->name = $account->name;
+        $former_name->save();
+        $account->name = $old_name;
+        $account->save();
+
         return $this->response()->success('修改成功')->refresh();
     }
 
@@ -37,19 +39,6 @@ class NameResetForm extends Form implements LazyRenderable
      */
     public function form()
     {
-        $alias = Alias::select('name')->where('member_id', $this->payload['id'])->get()->toarray();
-        $options = array();
-        foreach ($alias as $value) {
-            // 曾用名去重
-            if (!array_search($value['name'], $options)) {
-                // 当前名称去重
-                if ($this->payload['name'] != $value['name']) {
-                    $options[$value['name']] = $value['name'];
-                }
-            }   
-        }
-        $this->select('alias')
-            ->options($options)
-            ->required();
+        $this->select('former_name_id')->options(FormerName::where('account_id', $this->payload['id'])->pluck('name', 'id'))->required();
     }
 }

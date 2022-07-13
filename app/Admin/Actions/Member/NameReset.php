@@ -15,14 +15,11 @@ class NameReset extends RowAction
             'id' => $this->getKey(),
             'name' => $this->row->name,
         ]);
-
-        if ($this->row->nickname) { $member_name = $this->row->nickname; }
-        else { $member_name = $this->row->name; }
         
         return Modal::make()
             ->lg()
-            ->title($member_name . '的曾用名')
+            ->title($this->row->name . '的曾用名')
             ->body($form)
-            ->button('<i class="feather icon-edit-1"></i> 改回曾用名');
+            ->button('<a><i class="feather icon-edit-1"></i> 改回曾用名</a>');
     }
 }

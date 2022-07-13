@@ -5,13 +5,15 @@ return [
         'event' => '活动记录',
     ],
     'fields' => [
-        'time' => '时间',
-        'point' => '分值',
-        'comment' => '说明',
-        'member' => '参与玩家',
-        'nickname' => '昵称',
-        'alias' => '曾用名',
-        'custom_point' => '自定义分值',
+        'time'          => '时间',
+        'scoring_id'    => '计分项',
+        'scoring'       => [
+            'name'      => '计分项',
+        ],
+        'point'         => '分值',
+        'accounts'      => '参与账号',
+        'comment'       => '说明',
+        'custom_point'  => '自定义分值',
     ],
     'options' => [
     ],

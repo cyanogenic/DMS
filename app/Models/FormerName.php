@@ -6,13 +6,14 @@ use Dcat\Admin\Traits\HasDateTimeFormatter;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Scoring extends Model
+class FormerName extends Model
 {
 	use HasDateTimeFormatter;
 
-	protected $fillable = [
-		'name',
-		'point',
-		'comment',
-	];
+    protected $table = 'former_names';
+    
+    protected $fillable = [
+        'account_id',
+        'name',
+    ];
 }
