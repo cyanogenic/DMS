@@ -15,7 +15,7 @@ class Account extends Model implements AuditableContracts
     use Auditable;
 	use HasDateTimeFormatter;
     // FIX Search
-    use Searchable;
+    // use Searchable;
     use SoftDeletes;
 
     protected $fillable = [

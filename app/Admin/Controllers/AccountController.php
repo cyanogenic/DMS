@@ -68,15 +68,7 @@ class AccountController extends AdminController
             if (request('_scope_') == 'trashed') { $grid->disableEditButton(); }
 
             $grid->column('name');
-            $grid->column('player.name')->display(function ($name) {
-                if ($this->player) {
-                    if ($this->player->trashed()) {
-                        return "<span style='color:gray'>$name(在回收站中)</span>";
-                    } else {
-                        return $name;
-                    }
-                }
-            });
+            $grid->column('player.name');
             $grid->column('former_names')->pluck('name')->badge();
             $grid->column('created_at');
             $grid->column('updated_at')->sortable();

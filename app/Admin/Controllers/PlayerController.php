@@ -65,14 +65,16 @@ class PlayerController extends AdminController
             if (request('_scope_') == 'trashed') { $grid->disableEditButton(); }
 
             $grid->column('name');
-            $grid->column('accounts')->display(function ($accounts) {
-                $names = array();
-                foreach ($accounts as $account) {
-                    if ($account->trashed()) { $names[] = '<span class="badge" style="background:#cccccc">'. $account->name .' </span>'; }
-                    else { $names[] = '<span class="badge" style="background:#586cb1">'. $account->name .' </span>'; }
-                }
-                return implode(' ', $names);
-            });
+            if (request('_scope_') != 'trashed') {
+                $grid->column('accounts')->display(function ($accounts) {
+                    $names = array();
+                    foreach ($accounts as $account) {
+                        if ($account->trashed()) { $names[] = '<span class="badge" style="background:#cccccc">'. $account->name .' </span>'; }
+                        else { $names[] = '<span class="badge" style="background:#586cb1">'. $account->name .' </span>'; }
+                    }
+                    return implode(' ', $names);
+                });
+            }
             $grid->column('dkp')->sortable();
             $grid->column('created_at');
             $grid->column('updated_at')->sortable();
@@ -167,11 +169,12 @@ class PlayerController extends AdminController
 
             $form->deleting(function (Form $form) {
                 foreach (explode(',', $form->getKey()) as $player_id) {
-                    $player = Player::with('accounts')->find($player_id);
-                    // FIX
-                    $a = $player->toarray();
-                    if ($player->accounts) {
-                        return $this->response('玩家' . $player['name'] . '名下有绑定的账号,暂不允许删除')->refresh();
+                    $player = Player::withTrashed()->with('accounts')->find($player_id);
+                    // 软删除的玩家不判断名下是否有账号
+                    if (! $player->trashed()) {
+                        if ($player->accounts->count()) {
+                            return $form->response()->warning('玩家 ' . $player['name'] . ' 名下有绑定的账号,暂不允许删除')->refresh();
+                        }
                     }
                 }
             });

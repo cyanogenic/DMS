@@ -211,7 +211,8 @@ class EventController extends AdminController
                     // TODO 假Model
                     foreach ($form->model()->toArray() as $event) {
                         foreach (array_column($event['players'], 'id') as $player_id) {
-                            $player = Player::find($player_id);
+                            // 回收站里的也别想跑
+                            $player = Player::withTrashed()->find($player_id);
                             $player->dkp -= $event['point'];
                             $player->dkp_comment = '系统自动调整-活动记录删除';
                             $player->save();
